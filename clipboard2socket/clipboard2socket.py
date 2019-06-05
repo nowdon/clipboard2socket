@@ -42,6 +42,7 @@ class MainWindow(tkinter.Frame):
                                 height=2, width=7)
         self.send_btn.grid(row=9, column=1, sticky=E)
 
+    # send text data to host
     def onSendButton(self):
         host = self.host_box.get()
         port = int(self.port_box.get())
