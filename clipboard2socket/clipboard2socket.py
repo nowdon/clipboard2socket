@@ -34,8 +34,9 @@ class MainWindow(tkinter.Frame):
         self.cb_box.grid(row=5, rowspan=4, columnspan=2, sticky=NW)
         
         # Start clipboard monitoring in another thread
-        t = threading.Thread(target=getClipboard, args=(self,))
-        t.start()
+        self.t_stop = threading.Event()
+        self.t = threading.Thread(target=getClipboard, args=(self,))
+        self.t.start()
 
         # create send button
         self.send_btn = Button(master, text='send', command=self.onSendButton,
@@ -53,16 +54,24 @@ class MainWindow(tkinter.Frame):
             s.sendall(text.encode('shift-jis'))
         s.close()
 
+    # close thread when window is closed
+    def quitGUI(self):
+        self.t_stop.set()
+        while not self.t.is_alive():
+            self.t.join(timeout=0.2)
+        self.master.destroy()
+
 def getClipboard(w):
-    while True:
+    while not w.t_stop.is_set():
         w.cb_box.delete('1.0', 'end')
         clip_text = pyperclip.paste()
         w.cb_box.insert('end', clip_text)
-        sleep(0.2)
+        sleep(0.5)
 
 # -----------------------------------------------------------------------------
 
 if __name__ == '__main__':
     root = tkinter.Tk()
     w = MainWindow(root)
+    root.protocol("WM_DELETE_WINDOW", w.quitGUI)
     root.mainloop()
