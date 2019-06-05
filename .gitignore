@@ -1,6 +1,6 @@
 .python-version
 /.vscode/
-/__pycache__/
-/build/
-/dist/
+/clipboard2socket/__pycache__/
+/clipboard2socket/build/
+/clipboard2socket/dist/
 *.spec
