@@ -1,0 +1,1 @@
+# clipboard2socket
