@@ -1,3 +1,4 @@
+import sys
 import socket
 from time import sleep
 import pyperclip
@@ -62,9 +63,12 @@ class MainWindow(tkinter.Frame):
         self.master.destroy()
 
 def getClipboard(w):
+    non_bmp_map = dict.fromkeys(range(0x10000, sys.maxunicode + 1), '')
     while not w.t_stop.is_set():
         w.cb_box.delete('1.0', 'end')
         clip_text = pyperclip.paste()
+        # Replace out-of-range characters with empty characters
+        clip_text = clip_text.translate(non_bmp_map)
         w.cb_box.insert('end', clip_text)
         sleep(0.5)
 
