@@ -1,5 +1,6 @@
 .python-version
 /.vscode/
+/.mypy_cache/
 /clipboard2socket/__pycache__/
 /clipboard2socket/build/
 /clipboard2socket/dist/
