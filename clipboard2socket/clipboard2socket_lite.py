@@ -1,3 +1,14 @@
+__doc__ = """{f}
+
+Usage:
+    {f} <host> <port> [-e | --encode <encode>]
+    {f} -h | --help
+
+Options:
+    -e --encode <encode>  encoding of the text to send to socket
+    -h --help             Show this screen and exit.
+""".format(f=__file__)
+
 import sys
 import socket
 from time import sleep
@@ -5,6 +16,7 @@ from tkinter import *
 from tkinter import ttk
 import tkinter
 import pyperclip
+from docopt import docopt
 
 # -----------------------------------------------------------------------------
 
@@ -56,15 +68,23 @@ def sendClipboard(host, port, encode):
         s.sendall(text.encode(encode))
     s.close()
 
+def parseOpt():
+    args = docopt(__doc__)
+    h = str(args['<host>'])
+    p = int(args['<port>'])
+    if args['--encode']:
+        e = str(args['--encode'][0])
+    else:
+        e = 'siht-jis'
+    return h, p, e
+
 # -----------------------------------------------------------------------------
 
 if __name__ == '__main__':
-    if len(sys.argv) == 4:
-        h = str(sys.argv[1])
-        p = int(sys.argv[2])
-        e = str(sys.argv[3])
-        sendClipboard(h, p, e)
-    else:
+    if len(sys.argv) < 2:
         root = tkinter.Tk()
         w = MainWindow(root)
         root.mainloop()
+    else:
+        host, port, encode = parseOpt()
+        sendClipboard(host, port, encode)
