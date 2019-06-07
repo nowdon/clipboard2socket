@@ -75,7 +75,7 @@ def parseOpt():
     if args['--encode']:
         e = str(args['--encode'][0])
     else:
-        e = 'siht-jis'
+        e = 'shift-jis'
     return h, p, e
 
 # -----------------------------------------------------------------------------
