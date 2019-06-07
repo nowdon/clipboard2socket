@@ -3,6 +3,7 @@ import socket
 from time import sleep
 import pyperclip
 from tkinter import *
+from tkinter import ttk
 import tkinter
 import threading
 
@@ -25,15 +26,23 @@ class MainWindow(tkinter.Frame):
         self.port_lbl = Label(text='Port:')
         self.port_lbl.grid(row=2, sticky=W)
         self.port_box = Entry(width=20)
-        self.port_box.insert(END, '64881')
+        self.port_box.insert(END, '62881')
         self.port_box.grid(row=3, sticky=W)
 
         # create clipboard text box
         self.cb_lbl = Label(text='Clipboard')
-        self.cb_lbl.grid(row=4, sticky=W)
+        self.cb_lbl.grid(row=6, sticky=W)
         self.cb_box = Text(width=40)
-        self.cb_box.grid(row=5, rowspan=4, columnspan=2, sticky=NW)
-        
+        self.cb_box.grid(row=7, rowspan=4, columnspan=2, sticky=NW)
+
+        # create encoding combobox
+        self.enc_lbl = Label(text='Encode:')
+        self.enc_lbl.grid(row=4, sticky=W)
+        self.enc_cmb = ttk.Combobox(master, state='readonly')
+        self.enc_cmb['values'] = ('shift-jis', 'utf-8')
+        self.enc_cmb.current(0)
+        self.enc_cmb.grid(row=5, sticky=W)
+
         # Start clipboard monitoring in another thread
         self.t_stop = threading.Event()
         self.t = threading.Thread(target=getClipboard, args=(self,))
@@ -42,7 +51,7 @@ class MainWindow(tkinter.Frame):
         # create send button
         self.send_btn = Button(master, text='send', command=self.onSendButton,
                                 height=2, width=7)
-        self.send_btn.grid(row=9, column=1, sticky=E)
+        self.send_btn.grid(row=11, column=1, sticky=E)
 
     # send text data to host
     def onSendButton(self):
@@ -52,7 +61,7 @@ class MainWindow(tkinter.Frame):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.connect((host, port))
         if text is not None:
-            s.sendall(text.encode('shift-jis'))
+            s.sendall(text.encode(self.enc_cmb.get()))
         s.close()
 
     # close thread when window is closed
